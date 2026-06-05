@@ -2,15 +2,14 @@ import Button from "../component/Button";
 import Input from "../component/Input";
 import {useForm} from "react-hook-form"
 import toast,{Toaster} from "react-hot-toast"
+import { useUserContext } from "../context/authcontext";
 
 const Register = () => {
 
     let {register,handleSubmit,formState:{errors}} =useForm()
+    let {getStart} = useUserContext()
     let doRegister = (data) => {
-        console.log(data);
-        toast.success("login successfull")
-        
-
+        getStart(data)
     }
     let errorHandler = (errors) => {
         console.log("data");
@@ -28,9 +27,13 @@ const Register = () => {
           <h1 className="text-4xl font-mono font-light opacity-70 tracking-widest">Get Started</h1>
 
         <form onSubmit={handleSubmit(doRegister,errorHandler)} className="flex flex-col gap-[20px] pt-10">
-            {errors?.email&& <h3>{errors.email?.message}</h3>}
+            {errors?.username&& <h3 className="text-red-800">{errors.username?.message}</h3>}
             <Input lText="username" iType="text" phold="john" className={""} name="email" {...register("username",{
                 required:"usernmae required",
+                pattern:{
+                    value:/^[a-zA-Z0-9-_]{3,}/,
+                    message:"not a valid usernmae"
+                }
                 
             })}/>
             <Input lText="email" phold="john@gmail.com" iType="email" className={""} {...register("email",{
